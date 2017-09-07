@@ -1,3 +1,5 @@
+package demo;
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,9 +15,10 @@ import java.util.List;
 
 /**
  * Created by XD.Wang on 2017/9/6.
+ * 计算器
  */
 // 1. Application的子类代表一个JavaFX程序
-public class CalculatorDemoPane extends Application {
+public class CalculatorDemo extends Application {
 
     // 2. Application的子类必须实现这个方法，作为JavaFX程序的入口，一切从这里开始
     @Override
@@ -50,7 +53,7 @@ public class CalculatorDemoPane extends Application {
         Iterator<Button> numBtnListIter = numBtnList.iterator();
         for (int i = 1; i < 4; i++) {
             for (int j = 1; j < 4; j++) {
-                pane.add(numBtnListIter.next(), i, j);
+                pane.add(numBtnListIter.next(), j, i);
             }
         }
         // 2.11 把输入框放到规定的地方
@@ -70,7 +73,7 @@ public class CalculatorDemoPane extends Application {
     // 1.1 当你的JavaFX程序写好后，记得用main方法启动它
     public static void main(String[] args) {
         // 1.2 launch方法用来启动JavaFX程序
-        launch(CalculatorDemoPane.class);
+        launch(CalculatorDemo.class);
     }
 
 }
