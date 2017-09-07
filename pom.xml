@@ -27,9 +27,13 @@
             </plugin>
         </plugins>
     </build>
-    <!-- Project dependencies -->
-    <dependencies>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.7</version>
+        </dependency>
     </dependencies>
 
 
