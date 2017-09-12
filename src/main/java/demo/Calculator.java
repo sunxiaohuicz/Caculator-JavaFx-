@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  */
 public class Calculator {
 
-    private static final String EQUATION = "";
+    static final StringBuilder EQUATION = new StringBuilder();
 
     private static final Stack<String> ANALYSIS_STACK = new Stack<>();
 
@@ -27,12 +27,12 @@ public class Calculator {
     }};
 
     public static void main(String[] args) {
-        System.out.print(calExpr("1+(1-9)*2"));
-        System.out.print(calExpr("9-(20-9)/5"));
+        System.out.println(calExpr("1+(1-9)*2"));
+        System.out.println(calExpr("9-(20-9)/5"));
     }
 
     // 根据输入的算式计算
-    private static String calExpr(String expr) {
+    public static String calExpr(String expr) {
         return suffixToValue(getRPN(getValidExpr(expr)));
     }
 
