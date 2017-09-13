@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -150,7 +151,7 @@ public class Main extends Application {
         }
         if (EQUAL.equals(token)) {
             String expr = Calculator.EQUATION.toString();
-            System.out.println("待计算的表达式：" + expr);
+            System.out.println("[" + new Date() + "] 待计算的表达式：" + expr);
             String result = Calculator.calExpr(expr);
             arithmeticField.setText(Calculator.EQUATION.append(EQUAL).append(result).toString());
             inputField.setText(result);
