@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -114,8 +115,14 @@ public class Main extends Application {
 
     private static void setFuncBtn(GridPane pane) {
         Button toZeroBtn = new Button("清零");
+        toZeroBtn.setOnAction((final ActionEvent e) -> {
+            initCalculator();
+        });
         toZeroBtn.setMinWidth(55);
         Button backspaceBtn = new Button("退格");
+        backspaceBtn.setOnAction((final ActionEvent e) -> {
+            backSpace();
+        });
         backspaceBtn.setMinWidth(55);
 
         pane.add(toZeroBtn, 1, MAX_ROW, 2, 1);
@@ -142,15 +149,21 @@ public class Main extends Application {
             initCalculator();
         }
         if (EQUAL.equals(token)) {
-            String result = Calculator.calExpr(Calculator.EQUATION.toString());
+            String expr = Calculator.EQUATION.toString();
+            System.out.println("待计算的表达式：" + expr);
+            String result = Calculator.calExpr(expr);
             arithmeticField.setText(Calculator.EQUATION.append(EQUAL).append(result).toString());
             inputField.setText(result);
             INIT = true;
             return;
         }
-        String inputStr = Calculator.isNum(token) ? token : "";
-        inputField.setText(inputStr);
-        Calculator.EQUATION.append(token);
+        if (!Calculator.isNum(token) && StringUtils.isEmpty(inputField.getText())) {
+            Calculator.EQUATION.delete(Calculator.EQUATION.length() - 1, Calculator.EQUATION.length());
+            Calculator.EQUATION.append(token);
+        } else {
+            Calculator.EQUATION.append(token);
+        }
+        inputField.setText(Calculator.isNum(token) ? inputField.getText() + token : "");
         arithmeticField.setText(Calculator.EQUATION.toString());
     }
 
@@ -159,6 +172,15 @@ public class Main extends Application {
         inputField.setText("");
         arithmeticField.setText("");
         INIT = false;
+    }
+
+    private static void backSpace() {
+        String text = inputField.getText();
+        if (StringUtils.isNoneEmpty(text) && !INIT) {
+            inputField.setText(text.substring(0, text.length() - 1));
+            arithmeticField.setText(Calculator.EQUATION.substring(0, Calculator.EQUATION.length() - 1));
+            Calculator.EQUATION.delete(Calculator.EQUATION.length() - 1, Calculator.EQUATION.length());
+        }
     }
 
 }
