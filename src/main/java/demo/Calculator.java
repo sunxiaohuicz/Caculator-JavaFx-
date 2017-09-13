@@ -16,19 +16,19 @@ public class Calculator {
 
     private static final Stack<String> ANALYSIS_STACK = new Stack<>();
 
-    private static final String[] OPER = {"+", "-", "*", "/"};
+    private static final String[] OPER = {"+", "-", "x", "÷"};
 
     private static final HashMap<String, Integer> OPER_PRIORITY = new HashMap<String, Integer>() {{
-        put("*", 2);
-        put("/", 2);
+        put("x", 2);
+        put("÷", 2);
         put("+", 1);
         put("-", 1);
         put("", 0);
     }};
 
     public static void main(String[] args) {
-        System.out.println(calExpr("1+(1-9)*2"));
-        System.out.println(calExpr("9-(20-9)/5"));
+        System.out.println(calExpr("1+(1-9)x2"));
+        System.out.println(calExpr("9-(20-9)÷5"));
     }
 
     // 根据输入的算式计算
@@ -142,10 +142,10 @@ public class Calculator {
             case "-":
                 result = num1 - num2;
                 break;
-            case "*":
+            case "x":
                 result = num1 * num2;
                 break;
-            case "/":
+            case "÷":
                 if (num2 == 0) {
                     return "zeroDivided";
                 }
@@ -174,7 +174,7 @@ public class Calculator {
      * @param str 待检测字符串
      * @return 检测结果
      */
-    private static boolean isNum(String str) {
+    static boolean isNum(String str) {
         Pattern pattern = Pattern.compile("\\d+\\.?\\d?");
         Matcher matcher = pattern.matcher(str);
         return matcher.matches();

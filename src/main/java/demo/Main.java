@@ -1,6 +1,5 @@
 package demo;
 
-import common.RegUtils;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -22,8 +21,8 @@ import java.util.List;
  */
 public class Main extends Application {
 
-    static TextField inputField;
-    static TextField arithmeticField;
+    private static TextField inputField;
+    private static TextField arithmeticField;
     private static boolean INIT = false;
 
     private static final String PLUS = "+";
@@ -68,6 +67,9 @@ public class Main extends Application {
         List<Button> numBtnList = new ArrayList<>();
         for (int i = 1; i < 10; i++) {
             Button btn = new Button(i + "");
+            btn.setOnAction((final ActionEvent e) -> {
+                appendEquation(((Button) e.getSource()).getText());
+            });
             numBtnList.add(btn);
         }
         Iterator<Button> numBtnListIter = numBtnList.iterator();
@@ -84,13 +86,24 @@ public class Main extends Application {
     private static void setOperBtn(GridPane pane) {
         Button plusBtn = new Button(PLUS);
         plusBtn.setOnAction((final ActionEvent e) -> {
-            Button btn = (Button) e.getSource();
-            appendEquation(btn.getText());
+            appendEquation(((Button) e.getSource()).getText());
         });
         Button minorBtn = new Button(MINOR);
+        minorBtn.setOnAction((final ActionEvent e) -> {
+            appendEquation(((Button) e.getSource()).getText());
+        });
         Button multiBtn = new Button(MULTI);
+        multiBtn.setOnAction((final ActionEvent e) -> {
+            appendEquation(((Button) e.getSource()).getText());
+        });
         Button divBtn = new Button(DIVIDE);
+        divBtn.setOnAction((final ActionEvent e) -> {
+            appendEquation(((Button) e.getSource()).getText());
+        });
         Button equalBtn = new Button(EQUAL);
+        equalBtn.setOnAction((final ActionEvent e) -> {
+            appendEquation(((Button) e.getSource()).getText());
+        });
 
         pane.add(equalBtn, MAX_COL, 3);
         pane.add(plusBtn, 1, OPER_BTN_INDEX);
@@ -131,21 +144,15 @@ public class Main extends Application {
             arithmeticField.setText("");
             INIT = false;
         }
-        if (DIVIDE.equals(token)) {
-            token = "/";
-        }
-        if (MULTI.equals(token)) {
-            token = "*";
-        }
         if (EQUAL.equals(token)) {
             String result = Calculator.calExpr(Calculator.EQUATION.toString());
-            arithmeticField.setText(Calculator.EQUATION.toString() + EQUAL + result);
-            inputField.setText("");
+            arithmeticField.setText(Calculator.EQUATION.append(EQUAL).append(result).toString());
+            inputField.setText(result);
             INIT = true;
+            return;
         }
-        if (!RegUtils.isHardRegexpValidate(token, RegUtils.INTEGER_REGEXP)) {
-            inputField.setText("");
-        }
+        String inputStr = Calculator.isNum(token) ? token : "";
+        inputField.setText(inputStr);
         Calculator.EQUATION.append(token);
         arithmeticField.setText(Calculator.EQUATION.toString());
     }
