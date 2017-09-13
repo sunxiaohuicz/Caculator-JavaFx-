@@ -129,6 +129,7 @@ public class Main extends Application {
             Calculator.EQUATION.delete(0, Calculator.EQUATION.length());
             inputField.setText("");
             arithmeticField.setText("");
+            INIT = false;
         }
         if (DIVIDE.equals(token)) {
             token = "/";
@@ -138,8 +139,9 @@ public class Main extends Application {
         }
         if (EQUAL.equals(token)) {
             String result = Calculator.calExpr(Calculator.EQUATION.toString());
-            result = Calculator.EQUATION.toString() + EQUAL + result;
-            inputField.setText(result);
+            arithmeticField.setText(Calculator.EQUATION.toString() + EQUAL + result);
+            inputField.setText("");
+            INIT = true;
         }
         if (!RegUtils.isHardRegexpValidate(token, RegUtils.INTEGER_REGEXP)) {
             inputField.setText("");
