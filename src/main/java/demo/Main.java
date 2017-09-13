@@ -139,10 +139,7 @@ public class Main extends Application {
 
     private static void appendEquation(String token) {
         if (INIT) {
-            Calculator.EQUATION.delete(0, Calculator.EQUATION.length());
-            inputField.setText("");
-            arithmeticField.setText("");
-            INIT = false;
+            initCalculator();
         }
         if (EQUAL.equals(token)) {
             String result = Calculator.calExpr(Calculator.EQUATION.toString());
@@ -155,6 +152,13 @@ public class Main extends Application {
         inputField.setText(inputStr);
         Calculator.EQUATION.append(token);
         arithmeticField.setText(Calculator.EQUATION.toString());
+    }
+
+    private static void initCalculator() {
+        Calculator.EQUATION.delete(0, Calculator.EQUATION.length());
+        inputField.setText("");
+        arithmeticField.setText("");
+        INIT = false;
     }
 
 }
