@@ -3,16 +3,25 @@
  * 单元格合并
  */
 
-var rows = '[{"productId":"001","packageId":"aaa","元素标识":"001","元素描述":"元素描述001"},' +
-    '{"productId":"001","packageId":"aaa","元素标识":"002","元素描述":"元素描述002"},' +
-    '{"productId":"001","packageId":"bbb","元素标识":"001","元素描述":"元素描述001"},' +
-    '{"productId":"004","packageId":"aaa","元素标识":"001","元素描述":"元素描述001"},' +
-    '{"productId":"005","packageId":"aaa","元素标识":"001","元素描述":"元素描述001"},' +
-    '{"productId":"005","packageId":"bbb","元素标识":"001","元素描述":"元素描述001"},' +
-    '{"productId":"005","packageId":"bbb","元素标识":"002","元素描述":"元素描述002"},' +
-    '{"productId":"005","packageId":"ccc","元素标识":"001","元素描述":"元素描述001"},' +
-    '{"productId":"009","packageId":"aaa","元素标识":"001","元素描述":"元素描述001"},' +
-    '{"productId":"010","packageId":"ccc","元素标识":"001","元素描述":"元素描述001"}]';
+var rows = '[{"ORDER_ID":"a","PACKAGE_NAME":"包一","ELEMENT_NAME":"元素一","PRODUCT_NAME":"96元套餐"},' +
+    '{"ORDER_ID":"a","PACKAGE_NAME":"包二","ELEMENT_NAME":"元素二","PRODUCT_NAME":"96元套餐"},' +
+    '{"ORDER_ID":"a","PACKAGE_NAME":"包三","ELEMENT_NAME":"元素一","PRODUCT_NAME":"96元套餐"},' +
+    '{"ORDER_ID":"a","PACKAGE_NAME":"包三","ELEMENT_NAME":"元素二","PRODUCT_NAME":"96元套餐"},' +
+    '{"ORDER_ID":"a","PACKAGE_NAME":"包四","ELEMENT_NAME":"元素三","PRODUCT_NAME":"96元套餐"},' +
+    '{"ORDER_ID":"b","PACKAGE_NAME":"包一","ELEMENT_NAME":"元素二","PRODUCT_NAME":"80元套餐"},' +
+    '{"ORDER_ID":"b","PACKAGE_NAME":"包一","ELEMENT_NAME":"元素三","PRODUCT_NAME":"80元套餐"},' +
+    '{"ORDER_ID":"b","PACKAGE_NAME":"包一","ELEMENT_NAME":"元素四","PRODUCT_NAME":"80元套餐"},' +
+    '{"ORDER_ID":"b","PACKAGE_NAME":"包二","ELEMENT_NAME":"元素二","PRODUCT_NAME":"80元套餐"},' +
+    '{"ORDER_ID":"c","PACKAGE_NAME":"包一","ELEMENT_NAME":"元素一","PRODUCT_NAME":"59元套餐"},' +
+    '{"ORDER_ID":"c","PACKAGE_NAME":"包一","ELEMENT_NAME":"元素二","PRODUCT_NAME":"59元套餐"},' +
+    '{"ORDER_ID":"c","PACKAGE_NAME":"包一","ELEMENT_NAME":"元素三","PRODUCT_NAME":"59元套餐"},' +
+    '{"ORDER_ID":"d","PACKAGE_NAME":"包一","ELEMENT_NAME":"元素一","PRODUCT_NAME":"39元套餐"},' +
+    '{"ORDER_ID":"d","PACKAGE_NAME":"包一","ELEMENT_NAME":"元素三","PRODUCT_NAME":"39元套餐"},' +
+    '{"ORDER_ID":"d","PACKAGE_NAME":"包一","ELEMENT_NAME":"元素四","PRODUCT_NAME":"39元套餐"},' +
+    '{"ORDER_ID":"d","PACKAGE_NAME":"包三","ELEMENT_NAME":"元素二","PRODUCT_NAME":"39元套餐"},' +
+    '{"ORDER_ID":"d","PACKAGE_NAME":"包三","ELEMENT_NAME":"元素三","PRODUCT_NAME":"39元套餐"},' +
+    '{"ORDER_ID":"d","PACKAGE_NAME":"包四","ELEMENT_NAME":"元素一","PRODUCT_NAME":"39元套餐"},' +
+    '{"ORDER_ID":"d","PACKAGE_NAME":"包四","ELEMENT_NAME":"元素三","PRODUCT_NAME":"39元套餐"}]';
 
 var merges = getMergeInfo(rows);
 console.log(merges);
@@ -42,9 +51,13 @@ function getMergeInfo(rows) {
                         merge.rowspan = ROW_SPAN_INIT;
                     } else {
                         if (col[key] == val[key]) {
-                            merge.rowspan++
+                            merge.rowspan++;
+                            if (index == rowsJSON.length - 1) {
+                                merges.push(merge);
+                            }
                         } else {
-                            if (merge.rowspan > ROW_SPAN_INIT && isMerge(mergeList, merge, i)) {
+                            var check = checkMerge(mergeList, merge, i);
+                            if (merge.rowspan > ROW_SPAN_INIT && check != 0) {
                                 merges.push(merge);
                                 merge = {};
                             }
@@ -64,7 +77,7 @@ function getMergeInfo(rows) {
 }
 
 // 前列区间不能比后列区间大
-function isMerge(parentInterval, childrenInterval, index) {
+function checkMerge(parentInterval, childrenInterval, index) {
     var childBegin = childrenInterval.index;
     var childEnd = childrenInterval.index + childrenInterval.rowspan - 1;
     if (index > 0) {
@@ -73,11 +86,14 @@ function isMerge(parentInterval, childrenInterval, index) {
             var parentBegin = parentInterval[i].index;
             var parentEnd = parentInterval[i].index + parentInterval[i].rowspan - 1;
             if (parentBegin <= childBegin && parentEnd >= childEnd) {
-                return true;
+                return 1;
+            }
+            if (parentBegin >= childBegin && parentBegin <= childEnd) {
+                return 2;
             }
         }
     } else {
-        return true;
+        return 1;
     }
-    return false;
+    return 0;
 }

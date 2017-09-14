@@ -32,7 +32,7 @@ public class Calculator {
     }
 
     // 根据输入的算式计算
-    public static String calExpr(String expr) {
+    static String calExpr(String expr) {
         return suffixToValue(getRPN(getValidExpr(expr)));
     }
 
@@ -42,17 +42,14 @@ public class Calculator {
     }
 
     /**
-     * 将中缀表达式转换成后缀表达式
-     * eg：中缀表达式8+(9-1）*8+7/2
-     * 后缀表达式8 9 1 - 8 * + 7 2 / +，元素之间之间用空格分隔。
-     * 从左到右遍历中缀表达式的每一个数字和运算符
-     * 如果数字就输出（即存入后缀表达式）
-     * 如果是右括号，则弹出左括号之前的运算符
+     * 将普通表达式转换为逆波兰表达式
+     * 目标： 8+(9-1)x8+7÷2  =》 8 9 1 - 8 x + 7 2 ÷ +，
+     * 从左到右遍历中缀表达式的每一个数字和运算符，如果数字就输出，如果是右括号，则弹出左括号之前的运算符
      * 如果优先级低于栈顶运算符，则弹出栈顶运算符，并将当前运算符进栈
      * 遍历结束后，将栈则剩余运算符弹出。
      *
-     * @param expression 中缀表达式
-     * @return 后缀表达式
+     * @param expression 普通表达式
+     * @return 逆波兰表达式 Reverse Polish Notation（RPN）
      */
     private static String getRPN(String expression) {
         ANALYSIS_STACK.clear();
@@ -62,7 +59,6 @@ public class Calculator {
 
         while (inf.length() > 0) {
             element = popNextElement(inf);
-
             if (isNum(element)) { // 是数字则输出
                 suf.append(element).append(" ");
             } else if (")".equals(element)) { // 右括号则将左括号之前的内容全弹出
@@ -88,13 +84,10 @@ public class Calculator {
     }
 
     /**
-     * 根据后缀表达式算出结果
-     * eg：中缀表达式8+(9-1）*8+7/2
-     * 后缀表达式8 9 1 - 8 * + 7 2 / +，元素之间之间用空格分隔。
+     * 根据RPN算出结果
      * 从左到右遍历后缀表达式
      * 遇到数字就进栈
      * 遇到符号，就将栈顶的两个数字出栈运算，运算结果进栈，直到获得最终结果。
-     * -----------目前只支持整数，由于整数相除会出现浮点数，这里用String作为返回值--------
      *
      * @param expression 后缀表达式
      * @return 结果
@@ -105,7 +98,6 @@ public class Calculator {
         ANALYSIS_STACK.clear();
         double num1, num2; // 注意次序，num2在栈顶，整数运算结果也可能是double
         String tmp;
-
         for (String aSuffix : suffix) {
             if (isNum(aSuffix)) { // 数字
                 ANALYSIS_STACK.push(aSuffix);
@@ -213,7 +205,7 @@ public class Calculator {
      * 获取表达式的下一个运算符或数字，同时从表达式中删除该元素
      *
      * @param expression 表达式
-     * @return
+     * @return String
      */
     private static String popNextElement(StringBuilder expression) {
         StringBuilder result = new StringBuilder();
