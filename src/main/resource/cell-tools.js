@@ -56,12 +56,14 @@ function getMergeInfo(rows) {
                                 merges.push(merge);
                             }
                         } else {
-                            var check = checkMerge(mergeList, merge, i);
-                            if (merge.rowspan > ROW_SPAN_INIT && check != 0) {
-                                merges.push(merge);
+                            var intervalList = getInterval(mergeList, merge, i);
+                            if (merge.rowspan > ROW_SPAN_INIT && intervalList.length > 0) {
+                                Array.prototype.push.apply(merges,intervalList);
                                 merge = {};
                             }
+
                             col[key] = val[key];
+
                             merge.index = index;
                             merge.rowspan = ROW_SPAN_INIT;
                         }
@@ -77,7 +79,8 @@ function getMergeInfo(rows) {
 }
 
 // 前列区间不能比后列区间大
-function checkMerge(parentInterval, childrenInterval, index) {
+function getInterval(parentInterval, childrenInterval, index) {
+    var intervalList = [];
     var childBegin = childrenInterval.index;
     var childEnd = childrenInterval.index + childrenInterval.rowspan - 1;
     if (index > 0) {
@@ -86,14 +89,21 @@ function checkMerge(parentInterval, childrenInterval, index) {
             var parentBegin = parentInterval[i].index;
             var parentEnd = parentInterval[i].index + parentInterval[i].rowspan - 1;
             if (parentBegin <= childBegin && parentEnd >= childEnd) {
-                return 1;
+                var merge = {};
+                merge.index = childBegin;
+                merge.rowspan = childEnd;
+                intervalList.push(childrenInterval);
             }
-            if (parentBegin >= childBegin && parentBegin <= childEnd) {
-                return 2;
+            if (parentBegin >= childBegin && parentEnd <= childEnd) {
+                merge = {};
+                merge.index = parentBegin;
+                merge.rowspan = parentEnd - parentBegin + 1;
+                childBegin = parentEnd;
+                intervalList.push(merge);
             }
         }
     } else {
-        return 1;
+        intervalList.push(childrenInterval);
     }
-    return 0;
+    return intervalList;
 }
